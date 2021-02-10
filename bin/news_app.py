@@ -23,19 +23,19 @@ def get_news_headlines_by_source(source,api_key):
 		return None
 
 
-def save_headlines_data(data_dir,source,ts,data,run_id):
+def save_headlines_data(data_dir,source,ts,data):
 	# This function is to write the output of news headlines API in to a given location.
-	# Output file naming conventions is : [unique identifier]_[source]_[timestamp].txt
+	# Output file naming conventions is : [source]_[timestamp].txt
 
 	if not os.path.exists(data_dir):
 		os.makedirs(data_dir)
 
-	file_name = '{base}/{run}_{src}_{ts}.txt'.format(base=data_dir,run=run_id,src=source,ts=ts)
+	file_name = '{base}/{src}_{ts}.txt'.format(base=data_dir,src=source,ts=ts)
 	with open(file_name, 'w') as f:
 		json.dump(data, f)
 
 
-def worker(source,run_id=False):
+def worker(source):
 	# This is the worker funtion of this app. 
 	# A wrapper for get_news_headlines_by_source and save_headlines_data.
 
@@ -45,18 +45,12 @@ def worker(source,run_id=False):
 	data_dir= config['SETTINGS']['datadir']
 	
 	ts = datetime.datetime.now().strftime("%d_%m_%y_%H%M%S")
-	if run_id == False:
-		run_id = str(uuid.uuid4())
 
 	news_data = get_news_headlines_by_source(source,api_key)
 	if news_data:
-		save_headlines_data(data_dir,source,ts,news_data,run_id)
+		save_headlines_data(data_dir,source,ts,news_data)
 
 
 if __name__ == "__main__":
 	# This is for local testing
 	worker('cnn')
-
-
-
-
