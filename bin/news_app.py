@@ -6,6 +6,8 @@ import datetime
 import configparser
 
 def get_news_headlines_by_source(source,api_key):
+	# This function is to get news headlines for a given news source. 
+
 	config = configparser.ConfigParser()
 	config.read('creds.ini')
 	
@@ -20,7 +22,11 @@ def get_news_headlines_by_source(source,api_key):
 		print("Error in API call: {api}".format(api=url))
 		return None
 
+
 def save_headlines_data(data_dir,source,ts,data,run_id):
+	# This function is to write the output of news headlines API in to a given location.
+	# Output file naming conventions is : [unique identifier]_[source]_[timestamp].txt
+
 	if not os.path.exists(data_dir):
 		os.makedirs(data_dir)
 
@@ -28,7 +34,11 @@ def save_headlines_data(data_dir,source,ts,data,run_id):
 	with open(file_name, 'w') as f:
 		json.dump(data, f)
 
+
 def worker(source,run_id=False):
+	# This is the worker funtion of this app. 
+	# A wrapper for get_news_headlines_by_source and save_headlines_data.
+
 	config = configparser.ConfigParser()
 	config.read('config.ini')
 	api_key= config['NEWSAPI']['apikey']
@@ -41,6 +51,7 @@ def worker(source,run_id=False):
 	news_data = get_news_headlines_by_source(source,api_key)
 	if news_data:
 		save_headlines_data(data_dir,source,ts,news_data,run_id)
+
 
 if __name__ == "__main__":
 	# This is for local testing
