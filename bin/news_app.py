@@ -1,6 +1,5 @@
 import os
 import json
-import uuid
 import requests
 import datetime
 import configparser
